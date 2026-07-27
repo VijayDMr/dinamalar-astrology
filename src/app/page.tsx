@@ -64,29 +64,29 @@ export default function Home() {
   return (
     <main className="min-h-screen pb-16 bg-gradient-to-b from-slate-950 via-slate-950 to-red-950/20 text-slate-100 selection:bg-yellow-500 selection:text-red-950 relative overflow-x-hidden">
       
-      {/* 1. DEEP SPACE COSMIC BACKGROUND & CONSTELLATION LAYER */}
+      {/* 1. DEEP SPACE COSMIC BACKGROUND & TWINKLING CONSTELLATION LAYER */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        {/* Pulsing Nebulas */}
-        <div className="absolute top-1/4 left-1/4 w-[50vw] h-[50vw] rounded-full bg-red-950/10 filter blur-[120px] nebula-glow-1" />
-        <div className="absolute bottom-1/4 right-1/4 w-[55vw] h-[55vw] rounded-full bg-amber-950/8 filter blur-[140px] nebula-glow-2" />
+        {/* Pulsing Cosmic Nebulae */}
+        <div className="absolute top-1/4 left-1/4 w-[50vw] h-[50vw] rounded-full bg-red-900/15 filter blur-[130px] nebula-glow-1" />
+        <div className="absolute bottom-1/4 right-1/4 w-[55vw] h-[55vw] rounded-full bg-amber-900/12 filter blur-[150px] nebula-glow-2" />
         
-        {/* Sparkling Star Nodes & Constellations (Vector SVG Overlay) */}
-        <svg className="absolute inset-0 w-full h-full opacity-30" xmlns="http://www.w3.org/2000/svg">
-          {/* Glowing connecting constellation lines */}
-          <line x1="10%" y1="15%" x2="22%" y2="28%" stroke="rgba(245, 158, 11, 0.15)" strokeWidth="1.2" className="animate-pulse" />
-          <line x1="22%" y1="28%" x2="18%" y2="46%" stroke="rgba(245, 158, 11, 0.15)" strokeWidth="1.2" />
-          <line x1="18%" y1="46%" x2="7%" y2="52%" stroke="rgba(245, 158, 11, 0.15)" strokeWidth="1.2" className="animate-pulse" />
-          <line x1="75%" y1="12%" x2="86%" y2="25%" stroke="rgba(245, 158, 11, 0.15)" strokeWidth="1.2" />
-          <line x1="86%" y1="25%" x2="80%" y2="44%" stroke="rgba(245, 158, 11, 0.15)" strokeWidth="1.2" className="animate-pulse" />
-          <line x1="80%" y1="44%" x2="92%" y2="60%" stroke="rgba(245, 158, 11, 0.15)" strokeWidth="1.2" />
+        {/* Vibrant Glowing Constellation Grid (Vector SVG Overlay) */}
+        <svg className="absolute inset-0 w-full h-full opacity-65" xmlns="http://www.w3.org/2000/svg">
+          {/* Glowing connecting constellation lines (Vibrant Opacity) */}
+          <line x1="10%" y1="15%" x2="22%" y2="28%" stroke="rgba(245, 158, 11, 0.45)" strokeWidth="1.2" className="animate-pulse" />
+          <line x1="22%" y1="28%" x2="18%" y2="46%" stroke="rgba(245, 158, 11, 0.45)" strokeWidth="1.2" />
+          <line x1="18%" y1="46%" x2="7%" y2="52%" stroke="rgba(245, 158, 11, 0.45)" strokeWidth="1.2" className="animate-pulse" />
+          <line x1="75%" y1="12%" x2="86%" y2="25%" stroke="rgba(245, 158, 11, 0.45)" strokeWidth="1.2" />
+          <line x1="86%" y1="25%" x2="80%" y2="44%" stroke="rgba(245, 158, 11, 0.45)" strokeWidth="1.2" className="animate-pulse" />
+          <line x1="80%" y1="44%" x2="92%" y2="60%" stroke="rgba(245, 158, 11, 0.45)" strokeWidth="1.2" />
 
-          {/* Glowing static/twinkling star dots */}
+          {/* Twinkling star nodes (Brilliant Contrast) */}
           <circle cx="10%" cy="15%" r="2" fill="#F59E0B" className="star-twinkle-fast" />
           <circle cx="22%" cy="28%" r="3.5" fill="#FEF08A" className="star-twinkle-slow" />
           <circle cx="18%" cy="46%" r="2" fill="#F59E0B" className="star-twinkle-fast" />
-          <circle cx="7%" cy="52%" r="1.5" fill="#FFF" className="opacity-40" />
+          <circle cx="7%" cy="52%" r="1.5" fill="#FFF" className="opacity-70 animate-pulse" />
           <circle cx="75%" cy="12%" r="3" fill="#F59E0B" className="star-twinkle-slow" />
-          <circle cx="86%" cy="25%" r="1.5" fill="#FFF" className="opacity-50" />
+          <circle cx="86%" cy="25%" r="1.5" fill="#FFF" className="opacity-70 animate-pulse" />
           <circle cx="80%" cy="44%" r="4" fill="#FEF08A" className="star-twinkle-fast" />
           <circle cx="92%" cy="60%" r="2.5" fill="#F59E0B" className="star-twinkle-slow" />
         </svg>
@@ -130,9 +130,12 @@ export default function Home() {
       <div className="max-w-6xl mx-auto px-4 mt-4 sm:mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6 relative z-10">
         
         {/* HERO SECTION: 3D Rasi Palan Chakram Stage (Span 7) */}
-        <div className="lg:col-span-7 bg-slate-900/20 backdrop-blur-md rounded-3xl overflow-hidden flex flex-col items-center justify-center p-3 sm:p-5 relative shadow-xl shadow-black/80 border-gold-traditional">
+        <div className="lg:col-span-7 bg-slate-900/20 backdrop-blur-md rounded-3xl overflow-hidden flex flex-col items-center justify-center p-3 sm:p-5 relative shadow-xl shadow-black/80">
           <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 to-red-950/5 pointer-events-none" />
           
+          {/* Traditional Gold Corner Overlay: High-Z index, placing brackets perfectly over the overflow-hidden mask */}
+          <div className="absolute inset-0 border-gold-traditional rounded-3xl pointer-events-none z-20" />
+
           <div className="w-full flex items-center justify-between mb-2 px-2 z-10">
             <span className="text-[11px] sm:text-[12px] bg-red-950/60 text-yellow-500 border border-red-900/40 px-3 py-1 rounded-full font-bold flex items-center gap-1.5 shadow-md">
               <Sparkles className="w-3.5 h-3.5 text-yellow-400 animate-spin" />
@@ -171,7 +174,11 @@ export default function Home() {
         </div>
 
         {/* REUSABLE PREDICTIONS PANEL WITH ASYNC DATA BINDING (Span 5) */}
-        <PredictionsPanel selectedRasi={selectedRasi} />
+        <div className="lg:col-span-5 relative flex flex-col">
+          {/* Traditional Gold Corner Overlay: Sitting directly on top of the predictions card bounds */}
+          <div className="absolute inset-0 border-gold-traditional rounded-3xl pointer-events-none z-20" />
+          <PredictionsPanel selectedRasi={selectedRasi} />
+        </div>
 
       </div>
 
