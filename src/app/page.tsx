@@ -30,6 +30,78 @@ const RasiChakram3D = dynamic(() => import('../components/RasiChakram3D'), {
   )
 });
 
+// Helper function to render a highly stylized vector SVG representation of the Rasi Lord Planet
+function getPlanetIcon(lord: string) {
+  const cleanLord = lord.split(' ')[0].toLowerCase();
+  
+  if (cleanLord.includes('சூரியன்') || cleanLord.includes('sun')) {
+    return (
+      <svg viewBox="0 0 100 100" className="w-9 h-9 text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)] fill-current animate-spin" style={{ animationDuration: '30s' }}>
+        <circle cx="50" cy="50" r="16" />
+        <path d="M50,8 L50,22 M50,78 L50,92 M8,50 L22,50 M78,50 L92,50 M20,20 L31,31 M69,69 L80,80 M20,80 L31,69 M69,20 L80,31" stroke="currentColor" strokeWidth="6" strokeLinecap="round" />
+      </svg>
+    );
+  }
+  if (cleanLord.includes('சந்திரன்') || cleanLord.includes('moon')) {
+    return (
+      <svg viewBox="0 0 100 100" className="w-9 h-9 text-yellow-100 drop-shadow-[0_0_8px_rgba(254,240,138,0.6)] fill-current">
+        <path d="M72,25 C54,25 36,43 36,63 C36,75 42,85 50,90 C31,85 16,65 16,45 C16,25 31,10 50,5 C60,10 68,18 72,25 Z" />
+        <circle cx="48" cy="22" r="2.5" fill="#FFF" className="opacity-40" />
+      </svg>
+    );
+  }
+  if (cleanLord.includes('செவ்வாய்') || cleanLord.includes('mars')) {
+    return (
+      <svg viewBox="0 0 100 100" className="w-9 h-9 text-rose-500 drop-shadow-[0_0_8px_rgba(244,63,94,0.6)] fill-current">
+        <circle cx="50" cy="50" r="20" />
+        <path d="M50,10 L50,25 M35,17 L65,17" stroke="currentColor" strokeWidth="5" strokeLinecap="round" fill="none" />
+        <path d="M42,50 L58,50 M50,42 L50,58" stroke="#FFF" strokeWidth="4" strokeLinecap="round" />
+      </svg>
+    );
+  }
+  if (cleanLord.includes('புதன்') || cleanLord.includes('mercury')) {
+    return (
+      <svg viewBox="0 0 100 100" className="w-9 h-9 text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.6)] fill-current">
+        <circle cx="50" cy="50" r="18" />
+        <path d="M33,18 C41,10 59,10 67,18" stroke="currentColor" strokeWidth="5.5" strokeLinecap="round" fill="none" />
+        <path d="M50,68 L50,85 M38,76 L62,76" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
+      </svg>
+    );
+  }
+  if (cleanLord.includes('வியாழன்') || cleanLord.includes('jupiter')) {
+    return (
+      <svg viewBox="0 0 100 100" className="w-9 h-9 text-amber-500 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)] fill-current">
+        <circle cx="50" cy="50" r="24" className="opacity-15" />
+        <path d="M35,28 L65,28 L50,10 Z M50,28 L50,75 M36,60 L64,60" stroke="currentColor" strokeWidth="5.5" strokeLinecap="round" fill="none" />
+        <circle cx="50" cy="45" r="4.5" fill="#FFF" />
+      </svg>
+    );
+  }
+  if (cleanLord.includes('சுக்கிரன்') || cleanLord.includes('venus')) {
+    return (
+      <svg viewBox="0 0 100 100" className="w-9 h-9 text-teal-300 drop-shadow-[0_0_8px_rgba(110,231,183,0.6)] fill-current">
+        <path d="M50,12 L58,36 L84,36 L64,50 L72,74 L50,59 L28,74 L36,50 L16,36 L42,36 Z" />
+        <circle cx="50" cy="46" r="3" className="text-red-950 fill-current" />
+      </svg>
+    );
+  }
+  if (cleanLord.includes('சனி') || cleanLord.includes('saturn')) {
+    return (
+      <svg viewBox="0 0 100 100" className="w-9 h-9 text-violet-400 drop-shadow-[0_0_8px_rgba(167,139,250,0.6)] fill-current">
+        <circle cx="50" cy="50" r="14" />
+        <ellipse cx="50" cy="50" rx="38" ry="7.5" stroke="currentColor" strokeWidth="4.5" fill="none" transform="rotate(-15 50 50)" />
+      </svg>
+    );
+  }
+
+  // Default celestial stars
+  return (
+    <svg viewBox="0 0 100 100" className="w-9 h-9 text-yellow-400 drop-shadow-[0_0_8px_rgba(234,179,8,0.5)] fill-current">
+      <path d="M50,15 L62,38 L88,38 L68,52 L76,78 L50,62 L24,78 L32,52 L12,38 L38,38 Z" />
+    </svg>
+  );
+}
+
 export default function Home() {
   // Application state
   const [selectedRasi, setSelectedRasi] = useState<RasiData>(rasis[0]); // Default to Mesham
@@ -42,9 +114,9 @@ export default function Home() {
   const handleRasiSelect = (rasi: RasiData) => {
     setSelectedRasi(rasi);
     
-    // Play subtle haptic feedback if available (for mobile devices)
+    // Play subtle haptic vibration if available (for mobile devices)
     if (typeof window !== 'undefined' && window.navigator && window.navigator.vibrate) {
-      window.navigator.vibrate(15);
+      window.navigator.vibrate(20);
     }
   };
 
@@ -65,12 +137,36 @@ export default function Home() {
   return (
     <main className="min-h-screen pb-16 bg-gradient-to-b from-slate-950 via-slate-950 to-red-950/20 text-slate-100 selection:bg-yellow-500 selection:text-red-950 relative overflow-x-hidden">
       
-      {/* Decorative cosmic smoke effects */}
-      <div className="absolute top-0 left-1/4 w-[400px] h-[400px] rounded-full bg-red-900/10 blur-[120px] pointer-events-none" />
-      <div className="absolute top-1/3 right-1/4 w-[500px] h-[500px] rounded-full bg-amber-900/10 blur-[150px] pointer-events-none" />
+      {/* 1. DEEP SPACE COSMIC BACKGROUND & CONSTELLATION LAYER */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        {/* Pulsing Nebulas */}
+        <div className="absolute top-1/4 left-1/4 w-[50vw] h-[50vw] rounded-full bg-red-950/10 filter blur-[120px] nebula-glow-1" />
+        <div className="absolute bottom-1/4 right-1/4 w-[55vw] h-[55vw] rounded-full bg-amber-950/8 filter blur-[140px] nebula-glow-2" />
+        
+        {/* Sparkling Star Nodes & Constellations (Vector SVG Overlay) */}
+        <svg className="absolute inset-0 w-full h-full opacity-30" xmlns="http://www.w3.org/2000/svg">
+          {/* Glowing connecting constellation lines */}
+          <line x1="10%" y1="15%" x2="22%" y2="28%" stroke="rgba(245, 158, 11, 0.15)" strokeWidth="1.2" className="animate-pulse" />
+          <line x1="22%" y1="28%" x2="18%" y2="46%" stroke="rgba(245, 158, 11, 0.15)" strokeWidth="1.2" />
+          <line x1="18%" y1="46%" x2="7%" y2="52%" stroke="rgba(245, 158, 11, 0.15)" strokeWidth="1.2" className="animate-pulse" />
+          <line x1="75%" y1="12%" x2="86%" y2="25%" stroke="rgba(245, 158, 11, 0.15)" strokeWidth="1.2" />
+          <line x1="86%" y1="25%" x2="80%" y2="44%" stroke="rgba(245, 158, 11, 0.15)" strokeWidth="1.2" className="animate-pulse" />
+          <line x1="80%" y1="44%" x2="92%" y2="60%" stroke="rgba(245, 158, 11, 0.15)" strokeWidth="1.2" />
 
-      {/* 1. BRAND HEADER */}
-      <header className="w-full bg-gradient-to-b from-red-950/80 to-transparent border-b border-red-900/30 backdrop-blur-md sticky top-0 z-40 transition-all duration-300 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
+          {/* Glowing static/twinkling star dots */}
+          <circle cx="10%" cy="15%" r="2" fill="#F59E0B" className="star-twinkle-fast" />
+          <circle cx="22%" cy="28%" r="3.5" fill="#FEF08A" className="star-twinkle-slow" />
+          <circle cx="18%" cy="46%" r="2" fill="#F59E0B" className="star-twinkle-fast" />
+          <circle cx="7%" cy="52%" r="1.5" fill="#FFF" className="opacity-40" />
+          <circle cx="75%" cy="12%" r="3" fill="#F59E0B" className="star-twinkle-slow" />
+          <circle cx="86%" cy="25%" r="1.5" fill="#FFF" className="opacity-50" />
+          <circle cx="80%" cy="44%" r="4" fill="#FEF08A" className="star-twinkle-fast" />
+          <circle cx="92%" cy="60%" r="2.5" fill="#F59E0B" className="star-twinkle-slow" />
+        </svg>
+      </div>
+
+      {/* 2. BRAND HEADER */}
+      <header className="w-full bg-gradient-to-b from-red-950/80 to-transparent border-b border-red-900/30 backdrop-blur-md sticky top-0 z-45 transition-all duration-300 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
         <div className="max-w-6xl mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             {/* Main brand logo: sharing the exact same sun icon as the 3D Chakram center */}
@@ -103,12 +199,12 @@ export default function Home() {
         </div>
       </header>
 
-      {/* 2. MAIN LAYOUT GRID */}
+      {/* 3. MAIN LAYOUT GRID */}
       <div className="max-w-6xl mx-auto px-4 mt-4 sm:mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6 relative z-10">
         
         {/* HERO SECTION: 3D Rasi Palan Chakram Stage (Span 7) */}
-        <div className="lg:col-span-7 bg-slate-900/30 backdrop-blur-md rounded-3xl border border-red-900/20 overflow-hidden flex flex-col items-center justify-center p-3 sm:p-5 relative shadow-xl shadow-black/80">
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 to-red-950/10 pointer-events-none" />
+        <div className="lg:col-span-7 bg-slate-900/20 backdrop-blur-md rounded-3xl overflow-hidden flex flex-col items-center justify-center p-3 sm:p-5 relative shadow-xl shadow-black/80 border-gold-traditional">
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 to-red-950/5 pointer-events-none" />
           
           <div className="w-full flex items-center justify-between mb-2 px-2 z-10">
             <span className="text-[11px] sm:text-[12px] bg-red-950/60 text-yellow-500 border border-red-900/40 px-3 py-1 rounded-full font-bold flex items-center gap-1.5 shadow-md">
@@ -148,14 +244,14 @@ export default function Home() {
         </div>
 
         {/* PRIMARY PREDICTIONS PANEL (Span 5) */}
-        <div className="lg:col-span-5 flex flex-col bg-slate-900/40 backdrop-blur-md rounded-3xl border border-red-900/20 overflow-hidden shadow-xl shadow-black/80">
+        <div className="lg:col-span-5 flex flex-col bg-slate-900/20 backdrop-blur-md rounded-3xl overflow-hidden shadow-xl shadow-black/80 border-gold-traditional group hover:shadow-yellow-500/5 transition-all duration-300">
           
           {/* Selected Rasi Header Info Banner */}
           <div className="p-4 bg-gradient-to-r from-red-950/50 to-slate-950/60 border-b border-red-900/30 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="text-4xl sm:text-5xl">{selectedRasi.symbol}</span>
+            <div className="flex items-center gap-3.5">
+              <span className="text-4.5xl sm:text-5xl filter drop-shadow-[0_4px_6px_rgba(0,0,0,0.5)] transform group-hover:scale-105 transition-transform duration-300">{selectedRasi.symbol}</span>
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-yellow-400 font-sans tracking-wide">
+                <h2 className="text-xl sm:text-2xl font-bold font-sans tracking-wide text-gold-gradient drop-shadow-sm">
                   {selectedRasi.name} ராசிபலன்கள்
                 </h2>
                 <p className="text-[11px] text-slate-400 font-semibold tracking-wider uppercase font-mono mt-0.5 leading-none">
@@ -164,28 +260,30 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="text-right">
-              <span className="text-[10px] text-yellow-500/90 bg-red-950/60 border border-yellow-500/20 px-2.5 py-0.5 rounded-full font-bold">
-                {selectedRasi.lord.split(' ')[0]}
-              </span>
-              <p className="text-[9px] text-slate-500 font-mono mt-1 leading-none uppercase">அதிபதி (Lord)</p>
+            {/* Lord Planet Stylized Vector SVG Icon */}
+            <div className="flex flex-col items-center justify-center shrink-0 w-12 h-12 bg-black/40 rounded-xl border border-red-900/25">
+              {getPlanetIcon(selectedRasi.lord)}
             </div>
           </div>
 
-          {/* Lord / Lucky Numbers Banner */}
-          <div className="grid grid-cols-2 divide-x divide-red-900/20 bg-black/30 border-b border-red-900/20 text-center py-2 px-3">
+          {/* Lord / Lucky Numbers Banner (Elegant Gold Lined Panel) */}
+          <div className="grid grid-cols-3 divide-x divide-red-900/20 bg-black/45 border-b border-red-900/20 text-center py-2 px-3">
             <div>
-              <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">அதிர்ஷ்ட எண் (Lucky No)</span>
-              <span className="text-sm font-bold text-yellow-400 font-mono">{selectedRasi.luckyNumber}</span>
+              <span className="text-[9.5px] text-slate-400 font-semibold uppercase tracking-wider block">அதிபதி (Lord)</span>
+              <span className="text-[11px] font-bold text-yellow-500/90">{selectedRasi.lord.split(' ')[0]}</span>
             </div>
             <div>
-              <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">வண்ணம் (Lucky Color)</span>
+              <span className="text-[9.5px] text-slate-400 font-semibold uppercase tracking-wider block">அதிர்ஷ்ட எண்</span>
+              <span className="text-xs font-bold text-yellow-400 font-mono">{selectedRasi.luckyNumber}</span>
+            </div>
+            <div>
+              <span className="text-[9.5px] text-slate-400 font-semibold uppercase tracking-wider block">வண்ணம் (Color)</span>
               <span className="text-[11px] font-bold text-slate-100">{selectedRasi.luckyColor.split(' ')[0]}</span>
             </div>
           </div>
 
           {/* Predictions Navigation Tabs */}
-          <div className="flex bg-black/50 border-b border-red-900/10 overflow-x-auto scrollbar-none pr-2">
+          <div className="flex bg-black/60 border-b border-red-900/10 overflow-x-auto scrollbar-none pr-2">
             {[
               { id: 'today', label: 'இன்று' },
               { id: 'weekly', label: 'வாரம்' },
@@ -242,8 +340,8 @@ export default function Home() {
                 )}
 
                 <div className="text-[13.5px] sm:text-base leading-relaxed text-slate-200 text-justify relative">
-                  <span className="text-3xl text-yellow-500/20 absolute -top-4 -left-1 select-none">“</span>
-                  <p className="indent-4 font-sans leading-relaxed tracking-wide">
+                  <span className="text-3xl text-yellow-500/25 absolute -top-4 -left-1 select-none font-serif font-bold">“</span>
+                  <p className="indent-4 font-sans leading-relaxed tracking-wide text-slate-100">
                     {activeTab === 'today' && selectedRasi.today}
                     {activeTab === 'weekly' && selectedRasi.weekly}
                     {activeTab === 'monthly' && selectedRasi.monthly}
@@ -268,8 +366,8 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 3. INTERACTIVE ASTROLOGICAL TOOLKIT GRID */}
-      <section className="max-w-6xl mx-auto px-4 mt-8">
+      {/* 4. INTERACTIVE ASTROLOGICAL TOOLKIT GRID */}
+      <section className="max-w-6xl mx-auto px-4 mt-8 relative z-10">
         <div className="flex items-center gap-2 mb-4">
           <span className="w-2.5 h-5 bg-red-800 rounded-sm" />
           <h3 className="text-lg sm:text-xl font-bold text-yellow-500 font-sans tracking-wide">
@@ -402,10 +500,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. DETAILS OVERLAY (SLIDE-UP DRAWER) */}
+      {/* 5. DETAILS OVERLAY (SLIDE-UP DRAWER) */}
       <AnimatePresence>
         {activeTool && (
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+          <div className="fixed inset-0 bg-black/85 backdrop-blur-md flex items-end sm:items-center justify-center z-50 p-0 sm:p-4 animate-fade-in">
             {/* Backdrop click close */}
             <motion.div 
               initial={{ opacity: 0 }}
@@ -420,13 +518,13 @@ export default function Home() {
               initial={{ y: "100%", opacity: 0.5 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: "100%", opacity: 0.5 }}
-              transition={{ type: "spring", damping: 25, stiffness: 220 }}
-              className="w-full sm:max-w-2xl bg-gradient-to-b from-slate-900 to-slate-950 border-t sm:border border-red-900/40 rounded-t-3xl sm:rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.8)] overflow-hidden max-h-[85vh] sm:max-h-[90vh] flex flex-col relative z-10"
+              transition={{ type: "spring", damping: 26, stiffness: 220 }}
+              className="w-full sm:max-w-2xl bg-gradient-to-b from-slate-900 to-slate-950 border-t sm:border rounded-t-3xl sm:rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.95)] overflow-hidden max-h-[85vh] sm:max-h-[90vh] flex flex-col relative z-10 border-gold-traditional"
             >
               {/* Overlay Header */}
               <div className="p-4 sm:p-5 border-b border-red-900/30 bg-gradient-to-r from-red-950/50 to-transparent flex items-center justify-between">
                 <div>
-                  <h4 className="text-lg sm:text-xl font-bold text-yellow-400 font-sans tracking-wide">
+                  <h4 className="text-lg sm:text-xl font-bold text-gold-gradient font-sans tracking-wide">
                     {activeTool === 'panchangam' && 'தினசரி பஞ்சாங்கம் (Daily Panchangam)'}
                     {activeTool === 'horai' && 'கிரக ஹோரை கணிப்பான் (Graha Horai Calculator)'}
                     {activeTool === 'gowri' && 'கௌரி பஞ்சாங்கம் (Gowri Panchangam)'}

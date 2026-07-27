@@ -58,17 +58,34 @@ function Starfield() {
 // 2. Central Sun / Ganesha Logo Medallion
 function CentralMedallion() {
   const meshRef = useRef<THREE.Mesh>(null);
+  const outerRingRef = useRef<THREE.Mesh>(null);
   
   useFrame((state) => {
     if (meshRef.current) {
       meshRef.current.rotation.y = state.clock.getElapsedTime() * 0.3;
       // Hovering up and down gently
-      meshRef.current.position.y = Math.sin(state.clock.getElapsedTime() * 1.5) * 0.1;
+      meshRef.current.position.y = Math.sin(state.clock.getElapsedTime() * 1.5) * 0.08;
+    }
+    if (outerRingRef.current) {
+      // Counter-rotate the outer gyroscopic ring for a beautiful 3D gear mechanics visual
+      outerRingRef.current.rotation.y = -state.clock.getElapsedTime() * 0.2;
+      outerRingRef.current.position.y = Math.sin(state.clock.getElapsedTime() * 1.5) * 0.08;
     }
   });
 
   return (
     <group>
+      {/* Outer Gyroscopic Cosmic Golden Ring */}
+      <mesh ref={outerRingRef} rotation={[Math.PI / 2.2, 0, 0]}>
+        <torusGeometry args={[1.5, 0.05, 12, 48]} />
+        <meshStandardMaterial
+          color="#F59E0B" // Bright gold
+          metalness={0.9}
+          roughness={0.1}
+          emissive="#78350F"
+        />
+      </mesh>
+
       {/* Golden Outer Ring */}
       <mesh ref={meshRef}>
         <cylinderGeometry args={[1.1, 1.1, 0.15, 32]} />
@@ -130,7 +147,7 @@ function RasiCard({ rasi, index, total, selectedRasiId, onClick, wheelRotation }
     if (cardRef.current) {
       // Gently float hovered card up, and pull selected card slightly forward
       const hoverOffset = hovered ? 0.35 : 0;
-      const selectOffset = isSelected ? 0.2 : 0;
+      const selectOffset = isSelected ? 0.25 : 0;
       
       // Calculate current absolute angle of card in space including parent wheel rotation
       const absoluteAngle = angle + wheelRotation;
@@ -139,7 +156,7 @@ function RasiCard({ rasi, index, total, selectedRasiId, onClick, wheelRotation }
       cardRef.current.rotation.y = -absoluteAngle + Math.PI / 2;
       
       // Smoothly animate floating up/down
-      const floatVal = Math.sin(state.clock.getElapsedTime() * 2 + index) * 0.06;
+      const floatVal = Math.sin(state.clock.getElapsedTime() * 2 + index) * 0.05;
       cardRef.current.position.y = floatVal + hoverOffset;
       
       // Radial direction vector
@@ -153,6 +170,18 @@ function RasiCard({ rasi, index, total, selectedRasiId, onClick, wheelRotation }
 
   return (
     <group ref={cardRef}>
+      {/* Premium 3D Golden Bezel Plate (Placed slightly behind the glass pane) */}
+      <mesh position={[0, 0, -0.015]}>
+        <planeGeometry args={[1.04, 1.44]} />
+        <meshStandardMaterial
+          color={isSelected ? "#F59E0B" : hovered ? "#D97706" : "#78350F"}
+          metalness={0.9}
+          roughness={0.15}
+          emissive={isSelected ? "#FEF08A" : hovered ? "#78350F" : "#2d1201"}
+          emissiveIntensity={isSelected ? 1.0 : hovered ? 0.4 : 0.1}
+        />
+      </mesh>
+
       {/* 3D Glass Plane for physics/shadows */}
       <mesh
         onPointerOver={() => setHovered(true)}
@@ -161,7 +190,7 @@ function RasiCard({ rasi, index, total, selectedRasiId, onClick, wheelRotation }
       >
         <planeGeometry args={[1.0, 1.4]} />
         <meshPhysicalMaterial
-          color={isSelected ? "#7F1D1D" : hovered ? "#1E1B4B" : "#111827"}
+          color={isSelected ? "#3F0505" : hovered ? "#0D0A22" : "#05060F"}
           transparent
           opacity={0.4}
           roughness={0.1}
