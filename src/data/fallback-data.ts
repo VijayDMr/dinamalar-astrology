@@ -1,47 +1,7 @@
-export interface RasiData {
-  id: string;
-  name: string;
-  englishName: string;
-  lord: string; // அதிபதி
-  luckyNumber: string; // அதிர்ஷ்ட எண்
-  luckyColor: string; // அதிர்ஷ்ட வண்ணம்
-  symbol: string;
-  today: string; // இன்றைய ராசிபலன்
-  weekly: string; // வாராந்திர ராசிபலன்
-  monthly: string; // மாதாந்திர ராசிபலன்
-  guruPairchi: string; // குரு பெயர்ச்சி பலன்
-  saniPairchi: string; // சனி பெயர்ச்சி பலன்
-  raguKetuPairchi: string; // ராகு கேது பெயர்ச்சி பலன்
-  tamilNewYear: string; // தமிழ் புத்தாண்டு பலன்
-  englishNewYear: string; // ஆங்கில புத்தாண்டு பலன்
-  subhaMuhurtham: string[]; // சுப முகூர்த்த நாட்கள்
-}
-
-export interface PanchangamData {
-  date: string;
-  tamilDate: string; // தமிழ் தேதி
-  thithi: string; // திதி
-  nakshatram: string; // நட்சத்திரம்
-  yogam: string; // யோகம்
-  karanam: string; // கரணம்
-  rahuKalam: string; // ராகு காலம்
-  yamagandam: string; // எமகண்டம்
-  gulikai: string; // குளிகை
-  nallaNeram: string; // நல்ல நேரம்
-}
-
-export interface VirathamData {
-  name: string;
-  date: string;
-  description: string;
-}
-
-export interface VasthuData {
-  date: string;
-  tamilMonth: string;
-  time: string; // வாஸ்து நேரம்
-  description: string;
-}
+import { 
+  RasiData, PanchangamData, VirathamData, 
+  VasthuData, GowriPanchangamItem, HoraiItem 
+} from '../types/astrology';
 
 export const rasis: RasiData[] = [
   {
@@ -127,7 +87,7 @@ export const rasis: RasiData[] = [
     today: "இன்று உங்களுக்கு சுறுசுறுப்பான நாள். உங்களது ஆளுமைத் திறமை வெளிப்படும். வியாபாரத்தில் புதிய ஒப்பந்தங்கள் கையெழுத்தாகும். அரசாங்க வழியில் எதிர்பார்த்த உதவிகள் எளிதில் கிடைக்கும். தந்தையுடனான உறவு பலப்படும்.",
     weekly: "இந்த வாரம் உங்களது முயற்சிகள் அனைத்தும் மகத்தான வெற்றியைத் தரும். சமூகத்தில் உங்களது கௌரவம் அடையும். புதிய பொறுப்புகள் உங்களைத் தேடி வரும். கூட்டுத் தொழில் தொடங்குவது சாதகமாக அமையும். பணப்புழக்கம் அதிகரிக்கும்.",
     monthly: "இந்த மாதம் உங்களுக்குத் தொட்டதெல்லாம் பொன்னாகும் காலம். நீண்ட நாட்களாக எதிர்பார்த்த பதவி உயர்வு கிட்டும். வெளிநாடு செல்லும் வாய்ப்பு பிரகாசமாக உள்ளது. ஆரோக்கியம் சிறப்பாக இருக்கும்.",
-    guruPairchi: "குரு பகவானின் பார்வையால் குடும்பத்தில் சுப மங்கள நிகழ்வுகள் அடுக்கடுக்காக நடைபெறும். மகப்பேறு பாக்கியம் உண்டாகும். திருமண வயதிலுள்ள பிள்ளைகளுக்கு நல்ல வரன் அமையும். சேமிப்புகள் உயரும்.",
+    guruPairchi: "குரு பகவானின் பார்வையால் குடும்பத்தில் சுப மங்கள நிகழ்வுகள் அடுக்கடுக்காக நடைபெறும். மகப்பேறு பாக்கியம் உண்டாகும். திருமண வயதினருக்கு வரன் கைகூடும். சேமிப்புகள் உயரும்.",
     saniPairchi: "சனி பகவான் உங்களது கடின உழைப்பிற்குப் தகுந்த நற்பலன்களைத் தருவார். தொழில் எதிரிகள் அடங்குவர். நிலுவையில் இருந்த சட்ட விவகாரங்கள் உங்களுக்குச் சாதகமாக முடியும். கடன் பிரச்சினைகள் தீரும்.",
     raguKetuPairchi: "ராகu-கேது பெயர்ச்சி மூலம் ஆன்மீகத் தேடல் அதிகரிக்கும். குடும்பத்துடன் புனிதப் பயணங்கள் மேற்கொள்வீர்கள். பிதுரார்ஜித சொத்துக்களில் இருந்து வந்த பிரச்சினைகள் ஒரு முடிவுக்கு வரும்.",
     tamilNewYear: "தமிழ்ப் புத்தாண்டு உங்களுக்குப் புதிய அத்தியாயத்தைத் தொடங்கும். உங்களது புகழ் மற்றும் செல்வாக்கு பன்மடங்கு உயரும். எதிர்த்தவர்கள் நட்புக் கரம் நீட்டுவர். மாணவர்களுக்கு உயர்கல்வியில் சிறப்பான வாய்ப்பு அமையும்.",
@@ -235,7 +195,7 @@ export const rasis: RasiData[] = [
     today: "இன்று உங்களது அறிவுத்திறன் மற்றும் பேச்சாற்றலால் காரியங்கள் கைகூடும். புதிய நபர்களின் அறிமுகத்தால் நன்மை உண்டாகும். சுப காரியங்களில் பங்கேற்பீர்கள். வியாபாரத்தில் வாடிக்கையாளர்களின் வருகை அதிகரித்து இலாபம் பெருகும்.",
     weekly: "இந்த வாரம் உங்களது பொருளாதார நிலை சீராக இருக்கும். குடும்பத்தில் சுபகாரியங்கள் திட்டமிட்டபடி நடைபெறும். பிள்ளைகளால் பெருமை சேரும். பூர்வீக சொத்து விவகாரங்களில் சுமுக தீர்வு ஏற்படும். ஆரோக்கியம் மேம்படும்.",
     monthly: "இந்த மாதம் புதிய முயற்சிகள் அனைத்தும் கைகூடும். புதிய சொத்துக்கள் மற்றும் வாகனங்கள் வாங்கும் யோகம் உண்டாகும். உத்தியோகஸ்தர்களுக்கு பதவி உயர்வுக்கான அறிகுறி தென்படும். சேமிப்புகள் உயரும்.",
-    guruPairchi: "குரு பகவானின் அருள் முழுமையாகக் கிடைப்பதால் அதிர்ஷ்ட வாய்ப்புகள் கதவைத் தட்டும். புதிய தொழில் தொடங்குவது, வீடு வாங்குவது போன்ற கனவுகள் நனவாகும். சமூகத்தில் உங்களது அந்தஸ்து உயரும்.",
+    guruPairchi: "குரு பகவானின் அருள் முழுமையாகக் கிடைப்பதால் அதிர்ஷ்ட வாய்ப்புகள் கதாவைத் தட்டும். புதிய தொழில் தொடங்குவது, வீடு வாங்குவது போன்ற கனவுகள் நனவாகும். சமூகத்தில் உங்களது அந்தஸ்து உயரும்.",
     saniPairchi: "ஜென்மச் சனியின் தாக்கம் படிப்படியாகக் குறையும் காலம். உடல் ஆரோக்கியம் மேம்படும். தொழில் மந்த நிலை மாறி விறுவிறுப்புடன் செயல்படும். குடும்பத்தில் நீண்ட நாட்களாக இருந்த சச்சரவுகள் நீங்கும்.",
     raguKetuPairchi: "ராகு-கேது பெயர்ச்சி உங்களது சிந்தனைத் திறனை மேம்படுத்தும். வியாபாரத்தில் புதிய உத்திகளைக் கையாண்டு வெற்றி பெறுவீர்கள். தம்பதியினரிடையே ஒற்றுமை நிலவும். குழந்தைகளால் பெருமை சேரும்.",
     tamilNewYear: "தமிழ்ப் புத்தாண்டு உங்களுக்குப் புதிய உத்வேகத்தைத் தரும். தடைபட்ட சுபகாரியங்கள் கைகூடும். உங்களது நிர்வாகத் திறமை பலராலும் பாராட்டப்படும். சேமிப்புகள் உயரும் யோகம் உண்டு.",
@@ -328,19 +288,23 @@ export const kariNaatkal: string[] = [
   "22-09-2026 (புரட்டாசி 06)"
 ];
 
+export const gowriPanchangamMonday: GowriPanchangamItem[] = [
+  { time: "காலை 06:00 - 07:30", gowri: "அமிர்த கௌரி (Amirdha)", status: "good" },
+  { time: "காலை 07:30 - 09:00", gowri: "சூலம் கௌரி (Sulam - தீமை)", status: "bad" },
+  { time: "காலை 09:00 - 10:30", gowri: "உத்தியோக கௌரி (Udyoga)", status: "neutral" },
+  { time: "காலை 10:30 - 12:00", gowri: "லாப கௌரி (Labha)", status: "good" },
+  { time: "மதியம் 12:00 - 01:30", gowri: "சுக கௌri (Sugam)", status: "good" },
+  { time: "மதியம் 01:30 - 03:00", gowri: "தன கௌரி (Dhana)", status: "good" },
+  { time: "மதியம் 03:00 - 04:30", gowri: "விஷம் கௌரி (Visham)", status: "bad" },
+  { time: "மாலை 04:30 - 06:00", gowri: "லாப கௌரி (Labha)", status: "good" }
+];
+
 // Horai dynamic calculator
-export function getHoraiList(dayName: string): { time: string; planet: string; status: 'good' | 'bad' | 'neutral' }[] {
+export function getHoraiList(dayName: string): HoraiItem[] {
   // Ordered sequence of Planets in Horai: Sun -> Venus -> Mercury -> Moon -> Saturn -> Jupiter -> Mars -> Sun...
   const planetsOrder = ["சூரியன்", "சுக்கிரன்", "புதன்", "சந்திரன்", "சனி", "வியாழன்", "செவ்வாய்"];
   
   // Starting planet for each day of the week
-  // Sunday = Sun (index 0)
-  // Monday = Moon (index 3)
-  // Tuesday = Mars (index 6)
-  // Wednesday = Mercury (index 2)
-  // Thursday = Jupiter (index 5)
-  // Friday = Venus (index 1)
-  // Saturday = Saturn (index 4)
   const dayStartPlanetIndex: Record<string, number> = {
     "sunday": 0, "ஞாயிறு": 0,
     "monday": 3, "திங்கள்": 3,
@@ -362,7 +326,7 @@ export function getHoraiList(dayName: string): { time: string; planet: string; s
   };
 
   const startIdx = dayStartPlanetIndex[dayName.toLowerCase()] ?? 3; // Default Monday
-  const list = [];
+  const list: HoraiItem[] = [];
   
   // Return Horai list for 12 daytime hours starting at 6:00 AM
   for (let i = 0; i < 12; i++) {
@@ -385,21 +349,3 @@ export function getHoraiList(dayName: string): { time: string; planet: string; s
 
   return list;
 }
-
-// Gowri Panchangam static day timings
-export interface GowriPanchangamItem {
-  time: string;
-  gowri: string;
-  status: 'good' | 'bad' | 'neutral';
-}
-
-export const gowriPanchangamMonday: GowriPanchangamItem[] = [
-  { time: "காலை 06:00 - 07:30", gowri: "அமிர்த கௌரி (Amirdha)", status: "good" },
-  { time: "காலை 07:30 - 09:00", gowri: "சூலம் கௌரி (Sulam - தீமை)", status: "bad" },
-  { time: "காலை 09:00 - 10:30", gowri: "உத்தியோக கௌரி (Udyoga)", status: "neutral" },
-  { time: "காலை 10:30 - 12:00", gowri: "லாப கௌரி (Labha)", status: "good" },
-  { time: "மதியம் 12:00 - 01:30", gowri: "சுக கௌri (Sugam)", status: "good" },
-  { time: "மதியம் 01:30 - 03:00", gowri: "தன கௌரி (Dhana)", status: "good" },
-  { time: "மதியம் 03:00 - 04:30", gowri: "விஷம் கௌரி (Visham)", status: "bad" },
-  { time: "மாலை 04:30 - 06:00", gowri: "லாப கௌரி (Labha)", status: "good" }
-];

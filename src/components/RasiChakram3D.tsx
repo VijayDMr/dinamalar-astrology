@@ -4,7 +4,8 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame, useThree, ThreeEvent } from '@react-three/fiber';
 import { Html, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
-import { rasis, RasiData } from '../data/dinamalar-astrology';
+import { rasis } from '../data/fallback-data';
+import { RasiData } from '../types/astrology';
 
 // Prop interfaces
 interface RasiChakram3DProps {
