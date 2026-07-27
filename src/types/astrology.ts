@@ -1,3 +1,5 @@
+// src/types/astrology.ts
+
 export interface RasiData {
   id: string;
   name: string;
@@ -55,7 +57,67 @@ export interface GowriPanchangamItem {
   status: 'good' | 'bad' | 'neutral';
 }
 
-// Enterprise Feedback types
+// ------------------------------------------------
+// LUXURY 2026 COMMERCIAL ASTROLOGY PLATFORM TYPES
+// ------------------------------------------------
+
+// User birth parameters for high-end chart generation
+export interface BirthDetails {
+  name: string;
+  date: string;       // YYYY-MM-DD
+  time: string;       // HH:MM (24h)
+  location: string;   // City, Country
+  latitude: number;   // e.g. 13.0827 (Chennai)
+  longitude: number;  // e.g. 80.2707
+  timezone: number;   // e.g. 5.5
+}
+
+// Planet Placement details for real-time planet status
+export interface PlanetStatus {
+  name: string;       // e.g. "சூரியன் (Sun)"
+  sign: string;       // e.g. "ரிஷபம் (Taurus)"
+  degree: string;     // e.g. "14° 25' 12\""
+  house: number;      // e.g. 1, 2, 3...
+  nakshatram: string; // e.g. "ரோகிணி"
+  padha: number;      // e.g. 1, 2, 3, 4
+  strength: number;   // 0 to 100 percentage strength
+  isRetrograde: boolean;
+  status: 'Exalted' | 'Debilitated' | 'Own Sign' | 'Friendly' | 'Neutral' | 'Enemy';
+}
+
+// Dasha Node for timeline predictions
+export interface DashaNode {
+  planet: string;     // e.g. "Sani"
+  startDate: string;  // YYYY-MM-DD
+  endDate: string;
+  type: 'mahadasha' | 'antardasha' | 'pratyantardasha';
+  subDashas?: DashaNode[];
+}
+
+// AI Astrology Dialogue Interface
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  timestamp: string;
+  metadata?: {
+    latencyMs?: number;
+    tokensUsed?: number;
+    source?: 'gemini_reasoning' | 'local_fallback_rules';
+    isFallback?: boolean;
+  };
+}
+
+export interface SavedHoroscope {
+  id: string;
+  name: string;
+  gender: 'male' | 'female' | 'other';
+  birthDetails: BirthDetails;
+  notes?: string;
+  createdAt: string;
+}
+
+// Feedback logging
 export interface FeedbackPayload {
   sentiment: 'upvote' | 'downvote';
   rasiId: string;
@@ -63,12 +125,12 @@ export interface FeedbackPayload {
   comment?: string;
 }
 
-// Enterprise Telemetry logs
+// Telemetry logs
 export interface LogMetric {
   endpoint: string;
   latencyMs: number;
   status: number;
-  provider: 'primary' | 'secondary' | 'local_fallback';
+  provider: string;
   tokensUsed?: number;
   timestamp: string;
   errorMessage?: string;

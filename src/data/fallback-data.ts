@@ -1,6 +1,6 @@
 import { 
   RasiData, PanchangamData, VirathamData, 
-  VasthuData, GowriPanchangamItem, HoraiItem 
+  VasthuData, GowriPanchangamItem, HoraiItem, PlanetStatus 
 } from '../types/astrology';
 
 export const rasis: RasiData[] = [
@@ -349,3 +349,17 @@ export function getHoraiList(dayName: string): HoraiItem[] {
 
   return list;
 }
+
+// Standardized seed planet placements for Chennai/Vijay details
+export const defaultPlanetPlacements: PlanetStatus[] = [
+  { name: 'லக்னம் (Lagna)', sign: 'விருச்சிகம் (Scorpio)', degree: '12° 40\' 00"', house: 1, nakshatram: 'அனுஷம்', padha: 3, strength: 85, isRetrograde: false, status: 'Friendly' },
+  { name: 'சூரியன் (Sun)', sign: 'கன்னி (Virgo)', degree: '27° 15\' 44"', house: 11, nakshatram: 'சித்திரை', padha: 2, strength: 90, isRetrograde: false, status: 'Friendly' },
+  { name: 'சந்திரன் (Moon)', sign: 'ரிஷபம் (Taurus)', degree: '04° 10\' 12"', house: 7, nakshatram: 'கார்த்திகை', padha: 3, strength: 98, isRetrograde: false, status: 'Exalted' },
+  { name: 'செவ்வாய் (Mars)', sign: 'துலாம் (Libra)', degree: '18° 22\' 05"', house: 12, nakshatram: 'சுவாதி', padha: 4, strength: 65, isRetrograde: false, status: 'Enemy' },
+  { name: 'புதன் (Mercury)', sign: 'கன்னி (Virgo)', degree: '12° 50\' 30"', house: 11, nakshatram: 'அஸ்தம்', padha: 1, strength: 95, isRetrograde: false, status: 'Exalted' },
+  { name: 'வியாழன் (Jupiter)', sign: 'விருச்சிகம் (Scorpio)', degree: '22° 11\' 15"', house: 1, nakshatram: 'கேட்டை', padha: 2, strength: 88, isRetrograde: false, status: 'Friendly' },
+  { name: 'சுக்கிரன் (Venus)', sign: 'சிம்மம் (Leo)', degree: '05° 40\' 08"', house: 10, nakshatram: 'மகம்', padha: 2, strength: 72, isRetrograde: true, status: 'Enemy' },
+  { name: 'சனி (Saturn)', sign: 'கும்பம் (Aquarius)', degree: '18° 14\' 50"', house: 4, nakshatram: 'சதயம்', padha: 4, strength: 92, isRetrograde: false, status: 'Own Sign' },
+  { name: 'ராகு (Rahu)', sign: 'மீனம் (Pisces)', degree: '06° 24\' 12"', house: 5, nakshatram: 'உத்திரட்டாதி', padha: 1, strength: 80, isRetrograde: false, status: 'Neutral' },
+  { name: 'கேது (Ketu)', sign: 'கன்னி (Virgo)', degree: '06° 24\' 12"', house: 11, nakshatram: 'உத்திரம்', padha: 3, strength: 80, isRetrograde: false, status: 'Neutral' },
+];

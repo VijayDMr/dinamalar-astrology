@@ -5,17 +5,25 @@ import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Calendar, Clock, Star, Sparkles, AlertTriangle, 
-  Home as HomeIcon, CheckCircle2, X, Sun, Moon, Info 
+  Home as HomeIcon, CheckCircle2, X, Sun, Moon, Info,
+  User, LogIn, LogOut, Settings, Plus, Trash2, FolderHeart, Activity, Layers, Compass
 } from 'lucide-react';
 import { 
   rasis, panchangam, virathangal, vasthuDays, 
   kariNaatkal, getHoraiList, gowriPanchangamMonday 
 } from '../data/fallback-data';
-import { RasiData } from '../types/astrology';
 
-// Import our reusable modular components
+// Import Zustand Store
+import { useAppStore } from '../store/useAppStore';
+
+// Import our decoupled modular components
 import PredictionsPanel from '../components/PredictionsPanel';
 import ToolkitGrid from '../components/ToolkitGrid';
+import InteractiveKundli from '../components/InteractiveKundli';
+import LifeScoresWidget from '../components/LifeScoresWidget';
+import MoonPhaseWidget from '../components/MoonPhaseWidget';
+import PlanetStatusWidget from '../components/PlanetStatusWidget';
+import ChatAssistant from '../components/ChatAssistant';
 
 // Dynamically import the WebGL 3D Rasi Chakram with SSR disabled and a solar-loader fallback
 const RasiChakram3D = dynamic(() => import('../components/RasiChakram3D'), {
@@ -34,17 +42,58 @@ const RasiChakram3D = dynamic(() => import('../components/RasiChakram3D'), {
 });
 
 export default function Home() {
-  // Master state: Currently active Rasi metadata (Aries as default)
-  const [selectedRasi, setSelectedRasi] = useState<RasiData>(rasis[0]);
-  const [activeTool, setActiveTool] = useState<string | null>(null); // Controls active overlay drawer
-  const [horaiDay, setHoraiDay] = useState<string>('திங்கள்'); // Default day for Horai calculator
+  // Zustand Bindings
+  const { 
+    authStatus, userProfile, activeBirthDetails, savedHoroscopes, geminiApiKey,
+    loginGoogle, loginEmail, loginGuest, logout, updateBirthDetails, saveHoroscope, loadHoroscope, deleteHoroscope, setGeminiKey
+  } = useAppStore();
 
-  const handleRasiSelect = (rasi: RasiData) => {
+  // Component states
+  const [selectedRasi, setSelectedRasi] = useState(rasis[0]); // Current active Rasi metadata (Aries)
+  const [visualizerMode, setVisualizerMode] = useState<'3d_chakram' | 'birth_chart'>('3d_chakram'); // Left panel view toggle
+  const [activeTool, setActiveTool] = useState<string | null>(null); // Active overlay tool drawer
+  const [horaiDay, setHoraiDay] = useState<string>('திங்கள்'); // Default day for Horai calculator
+  const [showAdminModal, setShowAdminModal] = useState<boolean>(false); // Admin Key panel toggle
+  const [showProfileModal, setShowProfileModal] = useState<boolean>(false); // Birth chart profiles manager toggle
+
+  // Form states for profile creation
+  const [newProfileName, setNewProfileName] = useState<string>('');
+  const [newProfileDate, setNewProfileDate] = useState<string>('1995-10-15');
+  const [newProfileTime, setNewProfileTime] = useState<string>('08:30');
+  const [newProfileLocation, setNewProfileLocation] = useState<string>('Chennai, Tamil Nadu, India');
+  const [customKeyInput, setCustomKeyInput] = useState<string>(geminiApiKey || '');
+
+  const handleRasiSelect = (rasi: any) => {
     setSelectedRasi(rasi);
-    // Subtle touch feedback on compatible mobile devices
     if (typeof window !== 'undefined' && window.navigator && window.navigator.vibrate) {
       window.navigator.vibrate(20);
     }
+  };
+
+  const handleSaveProfile = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newProfileName.trim()) return;
+
+    const details = {
+      name: newProfileName,
+      date: newProfileDate,
+      time: newProfileTime,
+      location: newProfileLocation,
+      latitude: 13.0827, // Mock Geocoding coordinates (Chennai standard)
+      longitude: 80.2707,
+      timezone: 5.5
+    };
+
+    saveHoroscope(newProfileName, 'male', details);
+    setNewProfileName('');
+    alert('ஜாதக சுயவிவரம் வெற்றிகரமாகச் சேமிக்கப்பட்டது (Profile Saved)!');
+  };
+
+  const handleKeySave = (e: React.FormEvent) => {
+    e.preventDefault();
+    setGeminiKey(customKeyInput.trim() || null);
+    setShowAdminModal(false);
+    alert('அட்மின் அமைப்புகள் வெற்றிகரமாகச் சேமிக்கப்பட்டது (Settings Saved)!');
   };
 
   // Pre-calculated Horai List for active day
@@ -80,7 +129,7 @@ export default function Home() {
           <line x1="86%" y1="25%" x2="80%" y2="44%" stroke="rgba(245, 158, 11, 0.45)" strokeWidth="1.2" className="animate-pulse" />
           <line x1="80%" y1="44%" x2="92%" y2="60%" stroke="rgba(245, 158, 11, 0.45)" strokeWidth="1.2" />
 
-          {/* Twinkling star nodes (Brilliant Contrast) */}
+          {/* Twinkling star nodes */}
           <circle cx="10%" cy="15%" r="2" fill="#F59E0B" className="star-twinkle-fast" />
           <circle cx="22%" cy="28%" r="3.5" fill="#FEF08A" className="star-twinkle-slow" />
           <circle cx="18%" cy="46%" r="2" fill="#F59E0B" className="star-twinkle-fast" />
@@ -92,11 +141,11 @@ export default function Home() {
         </svg>
       </div>
 
-      {/* 2. BRAND HEADER */}
-      <header className="w-full bg-gradient-to-b from-red-950/80 to-transparent border-b border-red-900/30 backdrop-blur-md sticky top-0 z-45 transition-all duration-300 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
+      {/* 2. ENTERPRISE BRAND HEADER */}
+      <header className="w-full bg-gradient-to-b from-red-950/80 to-transparent border-b border-red-900/30 backdrop-blur-md sticky top-0 z-40 transition-all duration-300 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
         <div className="max-w-6xl mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {/* Main brand logo: sharing the exact same Ganesha-Sun logo as the 3D Chakram center */}
+            {/* Main brand Ganesha-Sun logo */}
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-red-800 to-red-950 border border-yellow-400 flex items-center justify-center shadow-md shadow-red-950/50">
               <svg viewBox="0 0 100 100" className="w-6 h-6 sm:w-7 sm:h-7 text-yellow-400 fill-current animate-pulse">
                 <path d="M50,15 L53,35 L70,20 L60,40 L80,35 L65,48 L85,55 L65,58 L78,75 L58,63 L65,83 L51,68 L50,85 L49,68 L35,83 L42,63 L22,75 L35,58 L15,55 L35,48 L20,35 L40,40 L30,20 L47,35 Z M50,30 C39,30 30,39 30,50 C30,61 39,70 50,70 C61,70 70,61 70,50 C70,39 61,30 50,30 Z" />
@@ -104,7 +153,7 @@ export default function Home() {
               </svg>
             </div>
             
-            {/* Title text */}
+            {/* Title labels */}
             <div>
               <h1 className="text-xl sm:text-2xl font-bold font-sans tracking-wide leading-none text-gold-gradient drop-shadow-md">
                 தினமலர் ஜோதிடம்
@@ -115,65 +164,133 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Quick Stats Banner */}
-          <div className="hidden md:flex items-center gap-6 bg-red-950/40 px-4 py-2 rounded-xl border border-red-900/30">
-            <div className="text-right">
-              <div className="text-[12px] text-yellow-500 font-semibold">{panchangam.tamilDate}</div>
-              <div className="text-[10px] text-slate-400 mt-0.5">கௌரி பஞ்சாங்கம் - நல்ல நேரம் இன்று</div>
-            </div>
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+          {/* User Profile & Settings Actions */}
+          <div className="flex items-center gap-3">
+            
+            {/* Saved Horoscopes profiles folder */}
+            <button
+              onClick={() => setShowProfileModal(true)}
+              className="px-3.5 py-1.5 rounded-xl border border-red-900/20 hover:border-yellow-500/35 bg-black/40 hover:bg-red-950/20 text-yellow-500 hover:text-yellow-400 flex items-center gap-2 text-xs font-bold transition-all"
+            >
+              <FolderHeart className="w-4 h-4" />
+              <span className="hidden sm:inline">ஜாதகங்கள் ({savedHoroscopes.length})</span>
+            </button>
+
+            {/* Admin settings modal trigger */}
+            <button
+              onClick={() => setShowAdminModal(true)}
+              className="p-2 rounded-xl bg-black/50 border border-slate-900 hover:border-yellow-500/35 text-slate-400 hover:text-yellow-400 transition-colors shadow-sm"
+              title="Admin Panel & API Keys"
+            >
+              <Settings className="w-4.5 h-4.5" />
+            </button>
+
+            {/* Google / Email Authentication trigger */}
+            {authStatus !== 'guest' ? (
+              <div className="flex items-center gap-2">
+                {userProfile.avatar ? (
+                  <img src={userProfile.avatar} alt="User Avatar" className="w-8 h-8 rounded-full border border-yellow-400" />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold">U</div>
+                )}
+                <button
+                  onClick={logout}
+                  className="p-2 rounded-xl bg-black/50 border border-slate-900 hover:border-rose-500/35 text-slate-400 hover:text-rose-400 transition-colors"
+                  title="Logout"
+                >
+                  <LogOut className="w-4.5 h-4.5" />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={loginGoogle}
+                className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-red-900 to-red-950 border border-yellow-500/20 text-yellow-400 hover:text-yellow-300 font-bold text-xs flex items-center gap-1.5 transition-all shadow-md shrink-0"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                <span>உள்நுழைக</span>
+              </button>
+            )}
+
           </div>
         </div>
       </header>
 
-      {/* 3. MAIN PREDICTION DISPLAY GRID */}
+      {/* 3. MAIN PREDICTION & STAGE LAYOUT GRID */}
       <div className="max-w-6xl mx-auto px-4 mt-4 sm:mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6 relative z-10">
         
-        {/* HERO SECTION: 3D Rasi Palan Chakram Stage (Span 7) */}
-        <div className="lg:col-span-7 bg-slate-900/20 backdrop-blur-md rounded-3xl overflow-hidden flex flex-col items-center justify-center p-3 sm:p-5 relative shadow-xl shadow-black/80">
+        {/* HERO SECTION: Dual-Stage Visualizer Panel (Span 7) */}
+        <div className="lg:col-span-7 bg-slate-900/20 backdrop-blur-md rounded-3xl overflow-hidden flex flex-col items-center justify-between p-3 sm:p-5 relative shadow-xl shadow-black/80">
           <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 to-red-950/5 pointer-events-none" />
           
-          {/* Traditional Gold Corner Overlay: High-Z index, placing brackets perfectly over the overflow-hidden mask */}
+          {/* Traditional Gold Corner Overlay: Sitting directly on top of the visualizer card bounds */}
           <div className="absolute inset-0 border-gold-traditional rounded-3xl pointer-events-none z-20" />
 
-          <div className="w-full flex items-center justify-between mb-2 px-2 z-10">
-            <span className="text-[11px] sm:text-[12px] bg-red-950/60 text-yellow-500 border border-red-900/40 px-3 py-1 rounded-full font-bold flex items-center gap-1.5 shadow-md">
-              <Sparkles className="w-3.5 h-3.5 text-yellow-400 animate-spin" />
-              த்ரிடி பிரபஞ்ச சக்கரம் (3D Cosmic Wheel)
-            </span>
-            <span className="text-[10px] text-slate-400 font-mono font-semibold uppercase tracking-wider">
-              Drag to spin
+          {/* Toggle visualizer options */}
+          <div className="w-full flex items-center justify-between mb-4 z-10 px-2">
+            <div className="flex items-center gap-1.5 p-1 bg-black/60 rounded-xl border border-slate-900">
+              <button
+                onClick={() => setVisualizerMode('3d_chakram')}
+                className={`px-3 py-1.5 text-[10px] font-bold rounded-lg transition-all flex items-center gap-1.5 ${
+                  visualizerMode === '3d_chakram' ? 'bg-red-950 text-yellow-400 border border-yellow-500/20 shadow-md' : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>3D பிரபஞ்ச சக்கரம்</span>
+              </button>
+              <button
+                onClick={() => setVisualizerMode('birth_chart')}
+                className={`px-3 py-1.5 text-[10px] font-bold rounded-lg transition-all flex items-center gap-1.5 ${
+                  visualizerMode === 'birth_chart' ? 'bg-red-950 text-yellow-400 border border-yellow-500/20 shadow-md' : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <Layers className="w-3.5 h-3.5" />
+                <span>ஜாதக கட்டம்</span>
+              </button>
+            </div>
+
+            <span className="text-[10px] text-slate-500 font-mono font-bold tracking-widest uppercase">
+              {activeBirthDetails.name} active
             </span>
           </div>
 
-          {/* 3D WebGL Canvas Loader/Wrapper */}
-          <RasiChakram3D onSelectRasi={handleRasiSelect} selectedRasiId={selectedRasi.id} />
-
-          {/* Quick Rasi Selector List for accessibility and fast desktop clicks */}
-          <div className="w-full border-t border-slate-900/40 pt-4 mt-2 z-10">
-            <div className="text-[11px] text-yellow-500/80 font-bold uppercase tracking-wider mb-2 text-center">
-              விரைவுத் தேர்வு (Quick Select Rasi)
-            </div>
-            <div className="flex flex-wrap justify-center gap-1.5 max-h-20 overflow-y-auto pr-1">
-              {rasis.map((r) => (
-                <button
-                  key={r.id}
-                  onClick={() => handleRasiSelect(r)}
-                  className={`px-3 py-1 text-xs rounded-lg border font-semibold transition-all duration-300 flex items-center gap-1 ${
-                    selectedRasi.id === r.id
-                      ? 'bg-red-950 border-yellow-400 text-yellow-400 shadow-md font-bold scale-105'
-                      : 'bg-black/40 border-slate-900 hover:border-red-900/40 hover:bg-red-950/20 text-slate-300'
-                  }`}
-                >
-                  <span className="text-sm">{r.symbol}</span>
-                  <span>{r.name}</span>
-                </button>
-              ))}
-            </div>
+          {/* Render selected stage view */}
+          <div className="w-full relative z-10 flex-1 flex items-center justify-center">
+            {visualizerMode === '3d_chakram' ? (
+              <RasiChakram3D onSelectRasi={handleRasiSelect} selectedRasiId={selectedRasi.id} />
+            ) : (
+              <div className="w-full animate-fade-in py-2">
+                <InteractiveKundli />
+              </div>
+            )}
           </div>
+
+          {/* Quick Rasi list selector */}
+          {visualizerMode === '3d_chakram' && (
+            <div className="w-full border-t border-slate-900/40 pt-4 mt-4 z-10">
+              <div className="text-[11px] text-yellow-500/80 font-bold uppercase tracking-wider mb-2 text-center">
+                விரைவுத் தேர்வு (Quick Select Rasi)
+              </div>
+              <div className="flex flex-wrap justify-center gap-1.5 max-h-20 overflow-y-auto pr-1">
+                {rasis.map((r) => (
+                  <button
+                    key={r.id}
+                    onClick={() => handleRasiSelect(r)}
+                    className={`px-3 py-1 text-xs rounded-lg border font-semibold transition-all duration-300 flex items-center gap-1 ${
+                      selectedRasi.id === r.id
+                        ? 'bg-red-950 border-yellow-400 text-yellow-400 shadow-md font-bold scale-105'
+                        : 'bg-black/40 border-slate-900 hover:border-red-900/40 hover:bg-red-950/20 text-slate-300'
+                    }`}
+                  >
+                    <span className="text-sm">{r.symbol}</span>
+                    <span>{r.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* REUSABLE PREDICTIONS PANEL WITH ASYNC DATA BINDING (Span 5) */}
+        {/* ASYNC PREDICTIONS DETAIL PANEL WITH INTEGRATED SENTIMENT FEEDBACK (Span 5) */}
         <div className="lg:col-span-5 relative flex flex-col">
           {/* Traditional Gold Corner Overlay: Sitting directly on top of the predictions card bounds */}
           <div className="absolute inset-0 border-gold-traditional rounded-3xl pointer-events-none z-20" />
@@ -182,12 +299,32 @@ export default function Home() {
 
       </div>
 
-      {/* 4. REUSABLE INTERACTIVE ASTROLOGICAL TOOLKIT GRID */}
-      <div className="max-w-6xl mx-auto px-4 mt-4 sm:mt-6">
+      {/* 4. LUXURY BENTO-GRID DASHBOARD */}
+      <div className="max-w-6xl mx-auto px-4 mt-6 grid grid-cols-1 md:grid-cols-12 gap-6 relative z-10">
+        
+        {/* Widget 1: Circular Score progress Gauges (Span 8) */}
+        <div className="md:col-span-8 flex flex-col h-full">
+          <LifeScoresWidget />
+        </div>
+
+        {/* Widget 2: Glowing lunar cycle visualizer (Span 4) */}
+        <div className="md:col-span-4 flex flex-col h-full">
+          <MoonPhaseWidget />
+        </div>
+
+        {/* Widget 3: Planet placement strengths and retrogrades (Span 12) */}
+        <div className="md:col-span-12">
+          <PlanetStatusWidget />
+        </div>
+
+      </div>
+
+      {/* 5. REUSABLE ASTROLOGICAL TOOLKIT GRID */}
+      <div className="max-w-6xl mx-auto px-4 mt-6">
         <ToolkitGrid selectedRasi={selectedRasi} onOpenTool={setActiveTool} />
       </div>
 
-      {/* 5. SECURE DETAILS OVERLAY (SLIDE-UP DRAWER) */}
+      {/* 6. SECURE DETAILS OVERLAY DRAWERS */}
       <AnimatePresence>
         {activeTool && (
           <div className="fixed inset-0 bg-black/85 backdrop-blur-md flex items-end sm:items-center justify-center z-50 p-0 sm:p-4 animate-fade-in">
@@ -256,7 +393,7 @@ export default function Home() {
                         { title: 'நட்சத்திரம் (Nakshatram)', desc: panchangam.nakshatram, color: 'text-amber-400' },
                         { title: 'யோகம் (Yogam)', desc: panchangam.yogam, color: 'text-slate-200' },
                         { title: 'கரணம் (Karanam)', desc: panchangam.karanam, color: 'text-slate-200' },
-                        { title: 'ராகு காலம் (Rahu Kalam)', desc: panchangam.rahuKalam, color: 'text-red-400 font-mono' },
+                        { title: 'ராகu காலம் (Rahu Kalam)', desc: panchangam.rahuKalam, color: 'text-red-400 font-mono' },
                         { title: 'எமகண்டம் (Yamagandam)', desc: panchangam.yamagandam, color: 'text-red-400 font-mono' },
                         { title: 'குளிகை (Gulikai)', desc: panchangam.gulikai, color: 'text-teal-400 font-mono' },
                         { title: 'நல்ல நேரம் (Auspicious Time)', desc: panchangam.nallaNeram, color: 'text-emerald-400' },
@@ -479,6 +616,180 @@ export default function Home() {
               <div className="p-4 border-t border-slate-900/40 bg-black/40 text-center text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
                 Dinamalar Astrology • Tamil Traditional Calculations
               </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* 7. FLOATING DOCKED GEMINI AI CHAT ASSISTANT */}
+      <ChatAssistant />
+
+      {/* 8. ADMIN SETTINGS / API KEYS PANEL MODAL */}
+      <AnimatePresence>
+        {showAdminModal && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fade-in">
+            <div className="absolute inset-0 cursor-pointer" onClick={() => setShowAdminModal(false)} />
+            
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="w-full sm:max-w-md bg-gradient-to-b from-slate-900 to-slate-950 border-gold-traditional rounded-3xl p-5 shadow-[0_0_40px_rgba(0,0,0,0.8)] relative z-10 space-y-4"
+            >
+              <div className="flex items-center justify-between border-b border-red-950/20 pb-3">
+                <div className="flex items-center gap-2">
+                  <Settings className="w-5 h-5 text-yellow-500 animate-spin" style={{ animationDuration: '10s' }} />
+                  <h5 className="text-sm font-bold text-gold-gradient font-sans">அட்மின் கட்டுப்பாட்டு அறை (Admin Vault)</h5>
+                </div>
+                <button onClick={() => setShowAdminModal(false)} className="text-slate-400 hover:text-yellow-400">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <form onSubmit={handleKeySave} className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-bold text-slate-400 block font-sans">CUSTOM GEMINI API KEY (OPTIONAL):</label>
+                  <input
+                    type="password"
+                    value={customKeyInput}
+                    onChange={(e) => setCustomKeyInput(e.target.value)}
+                    placeholder="Enter AI credentials (securely stored in browser)..."
+                    className="w-full bg-black/60 border border-slate-900 focus:border-yellow-500/40 rounded-xl outline-none px-3 py-2 text-xs text-slate-100 placeholder-slate-600 transition-all font-mono"
+                  />
+                  <span className="text-[10px] text-slate-500 leading-relaxed block font-sans">
+                    *தேவைப்பட்டால் இங்கு உங்களது சொந்த ஜெமினி கீயை உள்ளிடலாம். இல்லையெனில், இது எங்கள் சர்வர் பக்கத்தில் உள்ள பாதுகாப்பான கீயைப் பயன்படுத்தும்.
+                  </span>
+                </div>
+
+                <div className="bg-red-950/15 border border-red-900/20 p-3 rounded-xl space-y-1.5">
+                  <span className="text-[10.5px] font-bold text-yellow-500 flex items-center gap-1.5 font-sans">
+                    <Activity className="w-4 h-4 text-yellow-500 shrink-0" />
+                    ரியல்-டைம் பிழை பதிவுகள் (Error Log Simulator):
+                  </span>
+                  <div className="h-20 overflow-y-auto bg-black/60 rounded-lg p-2 font-mono text-[9px] text-emerald-400 space-y-1">
+                    <div>[LOG] [2026-07-27T16:20] Server API status: HEALTHY (200 OK)</div>
+                    <div>[LOG] [2026-07-27T16:21] Secure IP Token Bucket Rate Limiter active (0 limits)</div>
+                    <div>[LOG] [2026-07-27T16:22] RAG prompt compilation success: user &quot;விஜய்&quot;</div>
+                    <div className="text-yellow-400">[WARN] [2026-07-27T16:24] Primary key unconfigured. Fallback active.</div>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-2.5 bg-gradient-to-r from-red-900 to-red-950 border border-yellow-500/20 text-yellow-400 font-bold text-xs rounded-xl shadow-md"
+                >
+                  அமைப்புகளைச் சேமி (Save Settings)
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* 9. HOROSCOPES PROFILES MANAGER MODAL */}
+      <AnimatePresence>
+        {showProfileModal && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fade-in">
+            <div className="absolute inset-0 cursor-pointer" onClick={() => setShowProfileModal(false)} />
+            
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="w-full sm:max-w-md bg-gradient-to-b from-slate-900 to-slate-950 border-gold-traditional rounded-3xl p-5 shadow-[0_0_40px_rgba(0,0,0,0.8)] relative z-10 space-y-4"
+            >
+              <div className="flex items-center justify-between border-b border-red-950/20 pb-3">
+                <div className="flex items-center gap-2">
+                  <FolderHeart className="w-5 h-5 text-yellow-500" />
+                  <h5 className="text-sm font-bold text-gold-gradient font-sans">ஜாதக சுயவிவர மேலாளர் (Horoscopes Manager)</h5>
+                </div>
+                <button onClick={() => setShowProfileModal(false)} className="text-slate-400 hover:text-yellow-400">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Profiles list */}
+              <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
+                {savedHoroscopes.map((h) => (
+                  <div key={h.id} className="p-2.5 bg-black/45 rounded-xl border border-red-950/15 flex items-center justify-between hover:border-yellow-500/20 transition-colors">
+                    <button
+                      onClick={() => {
+                        loadHoroscope(h.id);
+                        setShowProfileModal(false);
+                      }}
+                      className="flex-1 text-left flex items-center gap-2"
+                    >
+                      <span className="text-xs font-bold text-slate-100 hover:text-yellow-400 transition-colors">{h.name}</span>
+                      <span className="text-[9px] text-slate-500 font-mono">({h.birthDetails.date})</span>
+                    </button>
+                    {h.id !== '1' && (
+                      <button
+                        onClick={() => deleteHoroscope(h.id)}
+                        className="p-1 rounded-lg hover:bg-rose-950/20 text-slate-500 hover:text-rose-500 transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Add profile form */}
+              <form onSubmit={handleSaveProfile} className="space-y-3.5 border-t border-red-950/20 pt-4">
+                <span className="text-xs font-bold text-yellow-500 flex items-center gap-1.5 font-sans">
+                  <Plus className="w-4 h-4" /> புதிய ஜாதகம் சேர் (Add New Horoscope):
+                </span>
+                
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[10px] text-slate-500 font-bold block mb-1">பெயர் (Name):</label>
+                    <input
+                      type="text"
+                      value={newProfileName}
+                      onChange={(e) => setNewProfileName(e.target.value)}
+                      placeholder="e.g. விஜய்"
+                      className="w-full bg-black/60 border border-slate-900 focus:border-yellow-500/40 rounded-xl outline-none px-3 py-1.5 text-xs text-slate-100 placeholder-slate-600 transition-all font-sans"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-slate-500 font-bold block mb-1">பிறந்த தேதி (Birth Date):</label>
+                    <input
+                      type="date"
+                      value={newProfileDate}
+                      onChange={(e) => setNewProfileDate(e.target.value)}
+                      className="w-full bg-black/60 border border-slate-900 focus:border-yellow-500/40 rounded-xl outline-none px-3 py-1.5 text-xs text-slate-100 transition-all font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[10px] text-slate-500 font-bold block mb-1">பிறந்த நேரம் (Time):</label>
+                    <input
+                      type="time"
+                      value={newProfileTime}
+                      onChange={(e) => setNewProfileTime(e.target.value)}
+                      className="w-full bg-black/60 border border-slate-900 focus:border-yellow-500/40 rounded-xl outline-none px-3 py-1.5 text-xs text-slate-100 transition-all font-mono"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-slate-500 font-bold block mb-1">பிறந்த இடம் (Location):</label>
+                    <input
+                      type="text"
+                      value={newProfileLocation}
+                      onChange={(e) => setNewProfileLocation(e.target.value)}
+                      className="w-full bg-black/60 border border-slate-900 focus:border-yellow-500/40 rounded-xl outline-none px-3 py-1.5 text-xs text-slate-100 transition-all font-sans"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-2 bg-gradient-to-r from-red-900 to-red-950 border border-yellow-500/20 text-yellow-400 font-bold text-xs rounded-xl shadow-md"
+                >
+                  ஜாதகத்தைச் சேமி (Save Profile)
+                </button>
+              </form>
             </motion.div>
           </div>
         )}
